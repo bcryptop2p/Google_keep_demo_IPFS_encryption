@@ -10,7 +10,7 @@ export const NoteContextProvider = (props) => {
     const [search, setSearch] = useState(null);
     const [editNote, seteditNote] = useState({ title: "", input: "" });
     const [deleted, setDeleted] = useState({ title: "", input: "" });
-    const [note, setNote] = useState({ title: "", input: ""  });
+    const [note, setNote] = useState({ title: "", input: "" });
     const [search_list, setSearch_list] = useState([]);
     const [notes_list, setNotes_list] = useState([]);
     const [visible, setVisible] = useState(false);
@@ -25,77 +25,49 @@ export const NoteContextProvider = (props) => {
     const client = create('https://ipfs.infura.io:5001/api/v0')
 
 
-    useEffect( () => {
+    useEffect(() => {
         const trash_string = localStorage.getItem('trash');
         const trash_lis = JSON.parse(trash_string);
         const list_string = localStorage.getItem('list');
-        const not_list = JSON.parse(list_string);
+        const not_list = JSON.parse(list_string);  
 
-       
+        if (not_list != null) {
+            getNoteData(not_list);
+        }
 
-        
-
-        // not_list && not_list.map(async(e,i)=>{
-        //     const res =  await axios.get(e.url);
-        //     var decryptTitle = decryptData(res.data.title.toString(), iv, key);
-        //     var decryptInput = decryptData(res.data.input.toString(), iv, key);
-        //     const decDeta = {
-        //         id: res.data.id,
-        //         title: decryptTitle,
-        //         input: decryptInput,
-        //     }
-        //     array.push(decDeta); 
-        // })
-
-        // getNoteData(not_list); 
-        setNotes_list(not_list);
         if (trash_lis != null) {
             setTrash_list(trash_lis);
         }
     }, [isUpdate])
 
-//    async function getNoteData(not_list){ 
-//     var array = [];  
-//     var iv = cryptoJs.enc.Base64.parse("");
-//     var key = cryptoJs.SHA256("test123");
+    async function getNoteData(not_list) {
+        var array = [];
+        var iv = cryptoJs.enc.Base64.parse("");
+        var key = cryptoJs.SHA256("test123");
 
-//     not_list && not_list.map(async(e)=>{
-//         const res =  await axios.get(e.url); 
-//             var decryptTitle = decryptData(res.data.title.toString(), iv, key); 
-//             var decryptInput = decryptData(res.data.input.toString(), iv, key);
-//             const decDeta = {
-//                 id: res.data.id,
-//                 title: decryptTitle,
-//                 input: decryptInput,
-//                 url: e.url
-//             } 
+        for (let index = 0; index < not_list.length; index++) {
+            const element = not_list[index];
+            const res = await axios.get(element.url);
+            console.log(res, "res");
+            var decryptTitle = decryptData(res.data.title.toString(), iv, key);
+            var decryptInput = decryptData(res.data.input.toString(), iv, key);
+            const decDeta = {
+                id: res.data.id,
+                title: decryptTitle,
+                input: decryptInput,
+                url: element.url
+            } 
+            array[index] = decDeta;
 
-//     })
-        // for (let index = 0; index <  not_list.length; index++) {
-        //     const element = not_list[index];
-        //     const res =  await axios.get(element.url);
-        //     console.log(res,"res");
-        //     var decryptTitle = decryptData(res.data.title.toString(), iv, key);
-        //     console.log(decryptTitle,"decryptTitle");
-        //     var decryptInput = decryptData(res.data.input.toString(), iv, key);
-        //     const decDeta = {
-        //         id: res.data.id,
-        //         title: decryptTitle,
-        //         input: decryptInput,
-        //         url: element.url
-        //     }
-        //     console.log(decDeta,"decDeta");
-        //     array[index]=decDeta;
-            
-        // }
-        // if (array != null && array != []) {
-        //     console.log(array,"use arry");
-        //     // setNotes_list(array);
-        // }
-    // }
+        }
+        if (array != null && array != []) {
+            console.log(array, "use arry");
+            setNotes_list(array);
+        }
+    }
 
 
-    function decryptData(encrypted, iv, key) { 
+    function decryptData(encrypted, iv, key) {
         var decrypted = cryptoJs.AES.decrypt(encrypted, key, {
             iv: iv,
             mode: cryptoJs.mode.CBC,
@@ -178,7 +150,7 @@ export const NoteContextProvider = (props) => {
         })
         await enDataTitle.then((e) => {
             ttl = e;
-        }) 
+        })
 
         if ((inp.length) > 0 || (ttl.length) > 0) {
             const enData = JSON.stringify({
@@ -188,12 +160,11 @@ export const NoteContextProvider = (props) => {
             });
             const added = await client.add(enData);
             const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-             
+
             notes_list.unshift({
                 id: Date.now(),
-                ...note,
                 url: url
-            }); 
+            });
 
             setNote({ title: '', input: '' });
             setNotes_list(notes_list);
@@ -252,39 +223,36 @@ export const NoteContextProvider = (props) => {
         const enDataInput = getEncryptData(editNote.input, iv, key, 'input');
         const enDataTitle = getEncryptData(editNote.title, iv, key, 'input');
 
-        await enDataInput.then((e) => {
-
+        await enDataInput.then((e) => { 
             updateInput = e;
         })
         await enDataTitle.then((e) => {
             updateTitle = e;
-        }) 
-       
+        })
+
         const enData = JSON.stringify({
-            id:  id,
+            id: id,
             title: updateTitle,
             input: updateInput
         });
-        console.log(enData,"enData");
+        console.log(enData, "enData");
         const added = await client.add(enData);
-        const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      
-
-        const nt = [{id,...editNote,url}]; 
+        const url = `https://ipfs.infura.io/ipfs/${added.path}`; 
+        const nt = [{ id, url }];
         let containsOnlyOneElement = notes_list.length === 1;
         //  setNotes_list((containsOnlyOneElement ? [{ id, ...nt[0]  }] : [{ id, ...nt[0] }, ...notes_list.filter(item => item.id !== id)]));
-         localStorage.setItem("list", JSON.stringify((containsOnlyOneElement ? [{ id, ...nt[0]  }] : [{ id, ...nt[0] }, ...notes_list.filter(item => item.id !== id)]))); 
-         
-         seteditNote({
+        localStorage.setItem("list", JSON.stringify((containsOnlyOneElement ? [{ id, ...nt[0] }] : [{ id, ...nt[0] }, ...notes_list.filter(item => item.id !== id)])));
+
+        seteditNote({
             title: "",
-            input: "" ,
-             url:""
+            input: "",
+            url: ""
         });
-        setShowPopUp(false);  
+        setShowPopUp(false);
         setPopUp_id(null);
         setIsUpdate(!isUpdate);
     }
-    const removeFromTrash = (id) => { 
+    const removeFromTrash = (id) => {
         const trash_l = trash_list.filter((item) => { return item.id !== id });
         setTrash_list(trash_l);
         localStorage.setItem("trash", JSON.stringify(trash_l));
@@ -328,7 +296,9 @@ export const NoteContextProvider = (props) => {
                 removeFromTrash,
                 trash_list,
                 styles,
-                handleSearch
+                handleSearch,
+                decryptData,
+                getNoteData
             }}
         >
             {props.children}
