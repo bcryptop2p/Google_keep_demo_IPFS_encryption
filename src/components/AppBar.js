@@ -31,6 +31,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import LabelIcon from '@mui/icons-material/Label';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useNavigate } from 'react-router-dom';
+import { NoteContext } from '../context/CreateNoteContext';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -73,6 +74,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar() {
+  const notContext = React.useContext(NoteContext);
+  const { handleSearch,search } = notContext; 
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -284,6 +287,8 @@ export default function Navbar() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              onChange={(e)=>handleSearch(e.target.value)}
+              value={search}
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />

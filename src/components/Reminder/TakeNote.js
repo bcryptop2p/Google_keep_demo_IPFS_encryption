@@ -1,19 +1,23 @@
+import { Button } from '@mui/material';
 import React from 'react';
+import { NoteContext } from '../../context/CreateNoteContext';
 
-const TakeNote = (props) => {
+const TakeNote = ( ) => {
+  const notContext = React.useContext(NoteContext);
+  const {visible,handleClick,note,handleChangeTitle ,handleChangeNote,addToNotes} = notContext;
     return(
         <div>
         {
-            props.actions.visible === false
+             visible === false
             ?
             <div className="take-notes1">
-              <input type="text" placeholder="Take a note..." onClick={props.actions.handleClick} className="initial" value={props.actions.note.title} onChange={()=>null}/>
+              <input type="text" placeholder="Take a note..." onClick={handleClick} className="initial" value={ note.title} onChange={()=>null}/>
             </div>
             :
             <div className="take-notes2">
-              <input type="text" value={props.actions.note.title} placeholder="Title" className="title" onChange={(e)=>props.actions.handleChangeTitle(e.target.value )}/><br></br>
-              <input type="text" value={props.actions.note.input} placeholder="Take a note..." onChange={(e)=>props.actions.handleChangeNote(e.target.value)} className="take-note" autoFocus="autofocus " /> 
-              <button onClick={props.actions.addToNotes}>Save</button>
+              <input type="text" value={ note.title} placeholder="Title" className="title" onChange={(e)=> handleChangeTitle(e.target.value )}/><br></br>
+              <input type="text" value={ note.input} placeholder="Take a note..." onChange={(e)=> handleChangeNote(e.target.value)} className="take-note" autoFocus="autofocus " /> 
+              <Button variant='contained' onClick={addToNotes}>Save</Button>
               
             </div>
         }

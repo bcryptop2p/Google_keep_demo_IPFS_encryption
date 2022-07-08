@@ -1,8 +1,10 @@
 import React from 'react';
 import Masonry from 'react-masonry-css';
+import { NoteContext } from '../../context/CreateNoteContext';
 
-const Trash = (props) => { 
-    console.log(props.trash_list,"tr");
+const Trash = () => {  
+  const notContext = React.useContext(NoteContext);
+  const { trash_list, removeFromTrash} = notContext;
     return(
         <div>
         <ul>
@@ -10,11 +12,11 @@ const Trash = (props) => {
             breakpointCols={4}
             className="my-masonry-grid"
             columnClassName="my-masonry-grid_column">
-            {props.trash_list && props.trash_list.map((item,index)=>
+            { trash_list &&  trash_list.map((item,index)=>
               <li key={index} className="trash-item" >
                 <span className="span1">{ item.title}</span> 
                 <span className="span2">{ item.input}</span> 
-                <button onClick={e=>props.removeFromTrash(item.id)} className="delete-forever"><img className="del-forever" src="./del1.png"/></button>
+                <button onClick={e=> removeFromTrash(item.id)} className="delete-forever"><img className="del-forever" src="./del1.png"/></button>
               </li>)}
           </Masonry>
         </ul>

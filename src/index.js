@@ -5,10 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { BrowserRouter } from "react-router-dom"; 
-import Router from './Routes'; 
+import { BrowserRouter } from "react-router-dom";
+import Router from './Routes';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { NoteContextProvider } from "./context/CreateNoteContext";
 
 const darkTheme = createTheme({
   palette: {
@@ -21,11 +22,13 @@ const darkTheme = createTheme({
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
+  <BrowserRouter> 
     <ThemeProvider theme={darkTheme}>
-      <App />
-      <Router />
-    </ThemeProvider>
+      <NoteContextProvider>
+        <App />
+        <Router />
+      </NoteContextProvider>
+    </ThemeProvider> 
   </BrowserRouter>
 );
 reportWebVitals();
