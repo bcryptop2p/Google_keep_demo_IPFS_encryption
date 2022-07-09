@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Home from './Home'; 
 
-function Reminder() { 
+function Notes() { 
   return (
     <div>
       <Home /> 
@@ -9,4 +9,4 @@ function Reminder() {
   )
 }
 
-export default Reminder
+export default Notes

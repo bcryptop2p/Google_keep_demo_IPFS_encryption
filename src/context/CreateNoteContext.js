@@ -21,6 +21,7 @@ export const NoteContextProvider = (props) => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [noteInput, setNoteInput] = useState("");
     const [noteTitle, setNoteTitle] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const client = create('https://ipfs.infura.io:5001/api/v0')
 
@@ -138,6 +139,7 @@ export const NoteContextProvider = (props) => {
 
 
     const addToNotes = async () => {
+        setLoading(true);
         var inp;
         var ttl;
         var iv = cryptoJs.enc.Base64.parse("");
@@ -171,16 +173,19 @@ export const NoteContextProvider = (props) => {
             setVisible(false);
             localStorage.setItem("list", JSON.stringify(notes_list));
             setIsUpdate(!isUpdate)
+            setLoading(false);
         }
         else {
             setVisible(false);
             setIsUpdate(!isUpdate)
+            setLoading(false)
         }
     }
 
 
 
     const removeFromNotes = (i, id) => {
+        setLoading(true)
         let deleted_note = notes_list.filter(item => { return item.id === id })[0];
         trash_list.unshift(deleted_note);
         setTrash_list(trash_list);
@@ -199,6 +204,7 @@ export const NoteContextProvider = (props) => {
         localStorage.setItem("list", JSON.stringify(notes_li));
         localStorage.setItem("trash", JSON.stringify(trash_list));
         setIsUpdate(!isUpdate)
+        setLoading(false)
 
     }
     const pinNote = (id) => {
@@ -216,6 +222,7 @@ export const NoteContextProvider = (props) => {
     }
 
     const updateNote = async (id) => {
+        setLoading(true)
         var updateInput;
         var updateTitle;
         var iv = cryptoJs.enc.Base64.parse("");
@@ -251,12 +258,15 @@ export const NoteContextProvider = (props) => {
         setShowPopUp(false);
         setPopUp_id(null);
         setIsUpdate(!isUpdate);
+        setLoading(false)
     }
     const removeFromTrash = (id) => {
+        setLoading(true)
         const trash_l = trash_list.filter((item) => { return item.id !== id });
         setTrash_list(trash_l);
         localStorage.setItem("trash", JSON.stringify(trash_l));
         setIsUpdate(!isUpdate)
+        setLoading(false)
 
     }
 
@@ -298,7 +308,8 @@ export const NoteContextProvider = (props) => {
                 styles,
                 handleSearch,
                 decryptData,
-                getNoteData
+                getNoteData,
+                loading,
             }}
         >
             {props.children}

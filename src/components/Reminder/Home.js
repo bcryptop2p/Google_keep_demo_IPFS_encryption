@@ -1,13 +1,12 @@
-import { Divider } from '@mui/material';
+import { CircularProgress, Divider } from '@mui/material';
 import React, { useEffect } from 'react';
 import Masonry from 'react-masonry-css';
 import TakeNote from './TakeNote';
-import { NoteContext } from "../../context/CreateNoteContext";
-import NoteView from './NoteView';
+import { NoteContext } from "../../context/CreateNoteContext"; 
 
 const PinnedNote = () => {
   const notContext = React.useContext(NoteContext);
-  const { pinned_id, notes_list, removeFromNotes, removePin } = notContext; 
+  const { pinned_id, notes_list, removeFromNotes, removePin,loading } = notContext; 
   
   if (pinned_id) {
     return (
@@ -43,6 +42,7 @@ const Home = () => {
     showNote,
     handleChangeEditNote,
     handleChangeEditTitle,
+    loading,
     styles, } = notContext;
   return (
     <div>
@@ -57,6 +57,9 @@ const Home = () => {
       </div>
       <PinnedNote /> 
       <ul>
+        {
+          loading === true && <CircularProgress/>
+        }
           <Masonry
             breakpointCols={4}
             className="my-masonry-grid"

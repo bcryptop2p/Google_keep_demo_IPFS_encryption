@@ -94,23 +94,23 @@ export default function Navbar() {
     {
         name:'Notes',
         icon: <NoteAddIcon/>,
-        path:'/notes'
+        path:'/'
     },
     {
         name:'Reminders',
         icon: <NotificationsActiveIcon/>,
         path:'/reminder'
     },
-    {
-        name:'sp',
-        icon: <LabelIcon/>,
-        path:'/sp'
-    },
-    {
-        name:'Edit Labels',
-        icon: <EditIcon/>,
-        path:'/label'
-    },
+    // {
+    //     name:'sp',
+    //     icon: <LabelIcon/>,
+    //     path:'/sp'
+    // },
+    // {
+    //     name:'Edit Labels',
+    //     icon: <EditIcon/>,
+    //     path:'/label'
+    // },
     {
         name:'Archive',
         icon: <ArchiveIcon/>,
